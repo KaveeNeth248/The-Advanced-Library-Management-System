@@ -1,41 +1,233 @@
-# Prerequisites
-*.d
+#include <iostream>
+#include <vector>
+#include <string>
+#include <iomanip>
+using namespace std;
 
-# Compiled Object files
-*.slo
-*.lo
-*.o
-*.obj
+// ANSI colors
+#define RESET   "\033[0m"
+#define RED     "\033[31m"
+#define GREEN   "\033[32m"
+#define YELLOW  "\033[33m"
+#define CYAN    "\033[36m"
+#define MAGENTA "\033[35m"
+#define BOLD    "\033[1m"
 
-# Precompiled Headers
-*.gch
-*.pch
+struct Book {
+    int id;
+    string title;
+    string author;
+    int copies;
+};
 
-# Linker files
-*.ilk
+struct Member {
+    int id;
+    string name;
+};
 
-# Debugger Files
-*.pdb
+vector<Book> books;
+vector<Member> members;
 
-# Compiled Dynamic libraries
-*.so
-*.dylib
-*.dll
+void showHeader() {
+    cout << MAGENTA << BOLD;
+    cout << "=============================================\n";
+    cout << "        📚 ADVANCED LIBRARY SYSTEM 📚         \n";
+    cout << "=============================================\n";
+    cout << RESET;
+}
 
-# Fortran module files
-*.mod
-*.smod
+void showMenu() {
+    showHeader();
+    cout << CYAN << "[1]" << RESET << " ➤ Add Book\n";
+    cout << CYAN << "[2]" << RESET << " ➤ Display Books\n";
+    cout << CYAN << "[3]" << RESET << " ➤ Search Book\n";
+    cout << CYAN << "[4]" << RESET << " ➤ Update Book\n";
+    cout << CYAN << "[5]" << RESET << " ➤ Delete Book\n";
+    cout << CYAN << "[6]" << RESET << " ➤ Add Member\n";
+    cout << CYAN << "[7]" << RESET << " ➤ Display Members\n";
+    cout << CYAN << "[8]" << RESET << " ➤ Borrow Book\n";
+    cout << CYAN << "[9]" << RESET << " ➤ Return Book\n";
+    cout << CYAN << "[10]" << RESET << " ➤ Exit\n";
+    cout << YELLOW << "Choose an option: " << RESET;
+}
 
-# Compiled Static libraries
-*.lai
-*.la
-*.a
-*.lib
+// ---------------- Book Functions ----------------
+void addBook() {
+    Book b;
+    cout << YELLOW << "Enter Book ID: " << RESET;
+    cin >> b.id;
+    cout << YELLOW << "Enter Title: " << RESET;
+    cin.ignore();
+    getline(cin, b.title);
+    cout << YELLOW << "Enter Author: " << RESET;
+    getline(cin, b.author);
+    cout << YELLOW << "Enter Copies: " << RESET;
+    cin >> b.copies;
+    books.push_back(b);
+    cout << GREEN << "✅ Book added successfully!\n" << RESET;
+}
 
-# Executables
-*.exe
-*.out
-*.app
+void displayBooks() {
+    if (books.empty()) {
+        cout << RED << "❌ No books available.\n" << RESET;
+        return;
+    }
+    cout << CYAN << "\n--- Book List ---\n" << RESET;
+    cout << "-------------------------------------------------------------\n";
+    cout << setw(6) << "ID" << " | "
+         << setw(20) << left << "Title" << " | "
+         << setw(15) << left << "Author" << " | "
+         << setw(6) << "Copies" << endl;
+    cout << "-------------------------------------------------------------\n";
+    for (auto &b : books) {
+        cout << setw(6) << b.id << " | "
+             << setw(20) << left << b.title << " | "
+             << setw(15) << left << b.author << " | "
+             << setw(6) << b.copies << endl;
+    }
+    cout << "-------------------------------------------------------------\n";
+}
 
-# debug information files
-*.dwo
+void searchBook() {
+    int id;
+    cout << YELLOW << "Enter Book ID to search: " << RESET;
+    cin >> id;
+    for (auto &b : books) {
+        if (b.id == id) {
+            cout << GREEN << "✅ Found: " << RESET 
+                 << b.title << " by " << b.author 
+                 << " (Copies: " << b.copies << ")\n";
+            return;
+        }
+    }
+    cout << RED << "❌ Book not found.\n" << RESET;
+}
+
+void updateBook() {
+    int id;
+    cout << YELLOW << "Enter Book ID to update: " << RESET;
+    cin >> id;
+    for (auto &b : books) {
+        if (b.id == id) {
+            cout << YELLOW << "Enter new title: " << RESET;
+            cin.ignore();
+            getline(cin, b.title);
+            cout << YELLOW << "Enter new author: " << RESET;
+            getline(cin, b.author);
+            cout << YELLOW << "Enter new copies: " << RESET;
+            cin >> b.copies;
+            cout << GREEN << "✅ Book updated successfully!\n" << RESET;
+            return;
+        }
+    }
+    cout << RED << "❌ Book not found.\n" << RESET;
+}
+
+void deleteBook() {
+    int id;
+    cout << YELLOW << "Enter Book ID to delete: " << RESET;
+    cin >> id;
+    for (auto it = books.begin(); it != books.end(); ++it) {
+        if (it->id == id) {
+            books.erase(it);
+            cout << GREEN << "✅ Book deleted successfully!\n" << RESET;
+            return;
+        }
+    }
+    cout << RED << "❌ Book not found.\n" << RESET;
+}
+
+// ---------------- Member Functions ----------------
+void addMember() {
+    Member m;
+    cout << YELLOW << "Enter Member ID: " << RESET;
+    cin >> m.id;
+    cout << YELLOW << "Enter Name: " << RESET;
+    cin.ignore();
+    getline(cin, m.name);
+    members.push_back(m);
+    cout << GREEN << "✅ Member added successfully!\n" << RESET;
+}
+
+void displayMembers() {
+    if (members.empty()) {
+        cout << RED << "❌ No members available.\n" << RESET;
+        return;
+    }
+    cout << CYAN << "\n--- Member List ---\n" << RESET;
+    cout << "-----------------------------------\n";
+    cout << setw(6) << "ID" << " | "
+         << setw(20) << left << "Name" << endl;
+    cout << "-----------------------------------\n";
+    for (auto &m : members) {
+        cout << setw(6) << m.id << " | "
+             << setw(20) << left << m.name << endl;
+    }
+    cout << "-----------------------------------\n";
+}
+
+// ---------------- Borrow/Return ----------------
+void borrowBook() {
+    int memberId, bookId;
+    cout << YELLOW << "Enter Member ID: " << RESET;
+    cin >> memberId;
+    cout << YELLOW << "Enter Book ID: " << RESET;
+    cin >> bookId;
+
+    for (auto &b : books) {
+        if (b.id == bookId) {
+            if (b.copies > 0) {
+                b.copies--;
+                cout << GREEN << "📖 Book borrowed successfully!\n" << RESET;
+                return;
+            } else {
+                cout << RED << "❌ No copies available.\n" << RESET;
+                return;
+            }
+        }
+    }
+    cout << RED << "❌ Book not found.\n" << RESET;
+}
+
+void returnBook() {
+    int bookId;
+    cout << YELLOW << "Enter Book ID to return: " << RESET;
+    cin >> bookId;
+    for (auto &b : books) {
+        if (b.id == bookId) {
+            b.copies++;
+            cout << GREEN << "📚 Book returned successfully!\n" << RESET;
+            return;
+        }
+    }
+    cout << RED << "❌ Book not found.\n" << RESET;
+}
+
+// ---------------- Main ----------------
+int main() {
+    int choice;
+    do {
+        showMenu();
+        cin >> choice;
+        cout << endl;
+        switch (choice) {
+            case 1: addBook(); break;
+            case 2: displayBooks(); break;
+            case 3: searchBook(); break;
+            case 4: updateBook(); break;
+            case 5: deleteBook(); break;
+            case 6: addMember(); break;
+            case 7: displayMembers(); break;
+            case 8: borrowBook(); break;
+            case 9: returnBook(); break;
+            case 10: cout << MAGENTA << "👋 Exiting... Goodbye!\n" << RESET; break;
+            default: cout << RED << "❌ Invalid choice!\n" << RESET;
+        }
+        cout << endl;
+    } while (choice != 10);
+
+    return 0;
+}
+
+
+
